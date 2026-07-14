@@ -1,17 +1,17 @@
-import openSansSemiBoldWoff2 from "../../assets/fonts/open-sans-v44-latin-600.woff2";
-import openSansRegularWoff2 from "../../assets/fonts/open-sans-v44-latin-regular.woff2";
+import interRegularWoff2 from "../../assets/fonts/inter-latin-400-normal.woff2";
+import interSemiBoldWoff2 from "../../assets/fonts/inter-latin-600-normal.woff2";
 
 const FONT_DEFINITIONS = [
   {
-    key: "open-sans-400",
-    family: "Open Sans",
-    source: openSansRegularWoff2,
+    key: "inter-400",
+    family: "Inter",
+    source: interRegularWoff2,
     weight: "400",
   },
   {
-    key: "open-sans-600",
-    family: "Open Sans",
-    source: openSansSemiBoldWoff2,
+    key: "inter-600",
+    family: "Inter",
+    source: interSemiBoldWoff2,
     weight: "600",
   },
 ] as const;
