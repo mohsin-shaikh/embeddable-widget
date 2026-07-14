@@ -25,6 +25,7 @@ function emitPreviewHostHtml(): Plugin {
             <ew-embed-widget
               heading="Embed Widget"
               cta-label="Get Started"
+              theme="light"
             ></ew-embed-widget>
             <script type="module" src="./embed.js"></script>
           </body>
