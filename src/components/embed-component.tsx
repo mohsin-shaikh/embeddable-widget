@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { ensureFontFaces } from '../lib/font-loader-module';
+import { Button } from './ui/button';
 
 export type EmbedWidgetComponentProps = {
   heading?: string;
@@ -63,13 +64,11 @@ export function EmbedWidgetComponent({
     <div className="rounded-lg border border-gray-200 bg-white p-6 font-sans shadow-lg">
       <h1 className="text-xl font-semibold text-gray-900">{heading}</h1>
       <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
-      <button
-        type="button"
-        className="mt-4 rounded-md border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
+      <Button
         onClick={() => onCta?.()}
       >
         {ctaLabel}
-      </button>
+      </Button>
     </div>
   );
 }
