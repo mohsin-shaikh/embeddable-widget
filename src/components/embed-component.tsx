@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { ensureFontFaces } from '../lib/font-loader-module';
 import { Button } from './ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
 
 export type EmbedWidgetComponentProps = {
   heading?: string;
@@ -61,14 +62,20 @@ export function EmbedWidgetComponent({
       : 'Loading widget fonts…';
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 font-sans shadow-lg">
-      <h1 className="text-xl font-semibold text-gray-900">{heading}</h1>
-      <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
-      <Button
-        onClick={() => onCta?.()}
-      >
-        {ctaLabel}
-      </Button>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{heading}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
+      </CardContent>
+        <CardFooter>
+          <Button
+            onClick={() => onCta?.()}
+            >
+            {ctaLabel}
+          </Button>
+        </CardFooter>
+    </Card>
   );
 }
