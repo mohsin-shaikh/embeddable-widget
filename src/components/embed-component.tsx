@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import { ensureFontFaces } from '../lib/font-loader-module';
+import { ensureFontFaces } from "../lib/font-loader-module";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 
 export type EmbedWidgetComponentProps = {
   heading?: string;
@@ -11,8 +13,8 @@ export type EmbedWidgetComponentProps = {
 };
 
 export function EmbedWidgetComponent({
-  heading = 'Embed Widget',
-  ctaLabel = 'Get Started',
+  heading = "Embed Widget",
+  ctaLabel = "Get Started",
   onReady,
   onError,
   onCta,
@@ -54,22 +56,22 @@ export function EmbedWidgetComponent({
   }, []);
 
   const statusMessage = fontsFailed
-    ? 'Custom fonts could not be loaded; using the system font stack.'
+    ? "Custom fonts could not be loaded; using the system font stack."
     : fontsReady
-      ? 'Open Sans is loaded at the document level for Shadow DOM usage.'
-      : 'Loading widget fonts…';
+      ? "Inter is loaded at the document level for Shadow DOM usage."
+      : "Loading widget fonts…";
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 font-sans shadow-lg">
-      <h1 className="text-xl font-semibold text-gray-900">{heading}</h1>
-      <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
-      <button
-        type="button"
-        className="mt-4 rounded-md border border-blue-600 bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700"
-        onClick={() => onCta?.()}
-      >
-        {ctaLabel}
-      </button>
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle>{heading}</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <p className="mt-2 text-sm text-muted-foreground">{statusMessage}</p>
+      </CardContent>
+      <CardFooter>
+        <Button onClick={() => onCta?.()}>{ctaLabel}</Button>
+      </CardFooter>
+    </Card>
   );
 }

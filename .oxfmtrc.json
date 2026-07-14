@@ -1,9 +1,18 @@
 {
   "$schema": "./node_modules/oxfmt/configuration_schema.json",
-  "singleQuote": true,
+  "singleQuote": false,
   "semi": true,
   "printWidth": 100,
-  "sortImports": true,
+  "sortImports": {
+    "newlinesBetween": true,
+    "internalPattern": ["@/", "~/", "#"],
+    "groups": [
+      ["builtin", "external"],
+      ["internal", "subpath", "parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ]
+  },
   "sortTailwindcss": {
     "stylesheet": "./src/main.css"
   },

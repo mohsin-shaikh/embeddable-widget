@@ -1,13 +1,15 @@
-import { createRoot, type Root } from 'react-dom/client';
+import { createRoot, type Root } from "react-dom/client";
 
-import { EmbedWidgetComponent } from './components/embed-component';
+import { EmbedWidgetComponent } from "./components/embed-component";
+import { ThemeProvider } from "./components/theme-provider";
 
-import styles from './main.css?inline';
+import styles from "./main.css?inline";
 
 /** Namespaced custom element tag to reduce collision risk on host pages. */
-export const EMBED_WIDGET_TAG_NAME = 'ew-embed-widget';
+export const EMBED_WIDGET_TAG_NAME = "ew-embed-widget";
 
-const OBSERVED_ATTRIBUTES = ['heading', 'cta-label'] as const;
+const OBSERVED_ATTRIBUTES = ["heading", "cta-label", "theme"] as const;
+const THEME_STORAGE_KEY = "ew-theme";
 
 export type EmbedWidgetAttributeName = (typeof OBSERVED_ATTRIBUTES)[number];
 
@@ -27,15 +29,15 @@ export class EmbedWidget extends HTMLElement {
   constructor() {
     super();
 
-    this.#shadowRoot = this.attachShadow({ mode: 'open' });
+    this.#shadowRoot = this.attachShadow({ mode: "open" });
 
-    const style = document.createElement('style');
+    const style = document.createElement("style");
     style.textContent = styles;
-    style.setAttribute('type', 'text/css');
+    style.setAttribute("type", "text/css");
     this.#shadowRoot.appendChild(style);
 
-    this.#mountEl = document.createElement('div');
-    this.#mountEl.setAttribute('data-ew-root', '');
+    this.#mountEl = document.createElement("div");
+    this.#mountEl.setAttribute("data-ew-root", "");
     this.#shadowRoot.appendChild(this.#mountEl);
   }
 
@@ -65,36 +67,54 @@ export class EmbedWidget extends HTMLElement {
       return;
     }
 
+    const themeAttribute = this.getAttribute("theme");
+    const defaultTheme =
+      themeAttribute === "dark" || themeAttribute === "light" || themeAttribute === "system"
+        ? themeAttribute
+        : "system";
+
+    // Host `theme` attribute is authoritative when present.
+    if (themeAttribute === defaultTheme) {
+      localStorage.setItem(THEME_STORAGE_KEY, defaultTheme);
+    }
+
     this.#root.render(
-      <EmbedWidgetComponent
-        heading={this.getAttribute('heading') ?? undefined}
-        ctaLabel={this.getAttribute('cta-label') ?? undefined}
-        onReady={() => {
-          this.dispatchEvent(
-            new CustomEvent('ew-ready', {
-              bubbles: true,
-              composed: true,
-            }),
-          );
-        }}
-        onError={(error) => {
-          this.dispatchEvent(
-            new CustomEvent('ew-error', {
-              detail: { error },
-              bubbles: true,
-              composed: true,
-            }),
-          );
-        }}
-        onCta={() => {
-          this.dispatchEvent(
-            new CustomEvent('ew-cta', {
-              bubbles: true,
-              composed: true,
-            }),
-          );
-        }}
-      />,
+      <ThemeProvider
+        key={defaultTheme}
+        defaultTheme={defaultTheme}
+        storageKey={THEME_STORAGE_KEY}
+        themeRoot={this.#mountEl}
+      >
+        <EmbedWidgetComponent
+          heading={this.getAttribute("heading") ?? undefined}
+          ctaLabel={this.getAttribute("cta-label") ?? undefined}
+          onReady={() => {
+            this.dispatchEvent(
+              new CustomEvent("ew-ready", {
+                bubbles: true,
+                composed: true,
+              }),
+            );
+          }}
+          onError={(error) => {
+            this.dispatchEvent(
+              new CustomEvent("ew-error", {
+                detail: { error },
+                bubbles: true,
+                composed: true,
+              }),
+            );
+          }}
+          onCta={() => {
+            this.dispatchEvent(
+              new CustomEvent("ew-cta", {
+                bubbles: true,
+                composed: true,
+              }),
+            );
+          }}
+        />
+      </ThemeProvider>,
     );
   }
 }
