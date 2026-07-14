@@ -1,6 +1,7 @@
 import { createRoot, type Root } from 'react-dom/client';
 
 import { EmbedWidgetComponent } from './components/embed-component';
+
 import styles from './main.css?inline';
 
 /** Namespaced custom element tag to reduce collision risk on host pages. */
@@ -51,11 +52,7 @@ export class EmbedWidget extends HTMLElement {
     this.#root = null;
   }
 
-  attributeChangedCallback(
-    _name: string,
-    oldValue: string | null,
-    newValue: string | null,
-  ) {
+  attributeChangedCallback(_name: string, oldValue: string | null, newValue: string | null) {
     if (oldValue === newValue || !this.#root) {
       return;
     }

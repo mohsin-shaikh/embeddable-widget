@@ -56,9 +56,7 @@ describe('normalizeTailwindShadowCss', () => {
   it('ignores non-Tailwind @property rules that inherit', () => {
     const result = normalizeTailwindShadowCss(TAILWIND_PROPERTY_FIXTURE);
 
-    expect(result).not.toMatch(
-      /:host[\s\S]*--unrelated\s*:/,
-    );
+    expect(result).not.toMatch(/:host[\s\S]*--unrelated\s*:/);
   });
 
   it('is idempotent across repeated passes', () => {

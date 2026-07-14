@@ -1,0 +1,11 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "semi": true,
+  "printWidth": 100,
+  "sortImports": true,
+  "sortTailwindcss": {
+    "stylesheet": "./src/main.css"
+  },
+  "ignorePatterns": ["dist/**", "coverage/**", "package-lock.json"]
+}
