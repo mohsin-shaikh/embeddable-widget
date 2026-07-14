@@ -2,10 +2,7 @@ import postcss from 'postcss';
 
 const TAILWIND_PROPERTY_NAME_PREFIX = '--tw-';
 const TAILWIND_FALLBACK_SELECTORS = ['*', ':before', ':after'];
-const TAILWIND_OPTIONAL_FALLBACK_SELECTORS = [
-  '::backdrop',
-  '::file-selector-button',
-];
+const TAILWIND_OPTIONAL_FALLBACK_SELECTORS = ['::backdrop', '::file-selector-button'];
 
 /**
  * These selectors need explicit defaults inside the shadow tree because they
@@ -125,10 +122,7 @@ function expandTailwindFallbackSelectors(root: postcss.Root) {
  * Ensures there is a host-scoped fallback rule in `@layer properties` even if
  * Tailwind only emitted nested feature-detected resets.
  */
-function ensureShadowFallbackRule(
-  root: postcss.Root,
-  fallbackDeclarations: Map<string, string>,
-) {
+function ensureShadowFallbackRule(root: postcss.Root, fallbackDeclarations: Map<string, string>) {
   const source = root.source;
   const existingRule: postcss.Rule | null = findShadowFallbackRule(root);
 
@@ -139,9 +133,7 @@ function ensureShadowFallbackRule(
           isMatchingDeclaration(node, propertyName),
         )
       ) {
-        existingRule.append(
-          createDeclaration(propertyName, initialValue, source),
-        );
+        existingRule.append(createDeclaration(propertyName, initialValue, source));
       }
     }
 
@@ -194,17 +186,12 @@ function findShadowFallbackRule(root: postcss.Root): postcss.Rule | null {
  * Selector order is not meaningful for this transform, so rule matching is
  * based on set equality rather than string equality.
  */
-function selectorsMatch(
-  actualSelectors: string[],
-  expectedSelectors: string[],
-) {
+function selectorsMatch(actualSelectors: string[], expectedSelectors: string[]) {
   if (actualSelectors.length !== expectedSelectors.length) {
     return false;
   }
 
-  const actualSelectorSet = new Set(
-    actualSelectors.map((selector) => selector.trim()),
-  );
+  const actualSelectorSet = new Set(actualSelectors.map((selector) => selector.trim()));
 
   return expectedSelectors.every((selector) => actualSelectorSet.has(selector));
 }
@@ -220,9 +207,7 @@ function isTopLevelPropertiesLayerRule(rule: postcss.Rule) {
 function isTailwindFallbackSelectorGroup(selectors: string[]) {
   const selectorSet = new Set(selectors.map((selector) => selector.trim()));
 
-  if (
-    !TAILWIND_FALLBACK_SELECTORS.every((selector) => selectorSet.has(selector))
-  ) {
+  if (!TAILWIND_FALLBACK_SELECTORS.every((selector) => selectorSet.has(selector))) {
     return false;
   }
 
@@ -263,9 +248,7 @@ function getTailwindPropertyInitialValue(atRule: postcss.AtRule) {
  * properties, not every rule that happens to share the same selector list.
  */
 function isTailwindCustomPropertyDeclaration(node: postcss.ChildNode) {
-  return (
-    node.type === 'decl' && node.prop.startsWith(TAILWIND_PROPERTY_NAME_PREFIX)
-  );
+  return node.type === 'decl' && node.prop.startsWith(TAILWIND_PROPERTY_NAME_PREFIX);
 }
 
 /**

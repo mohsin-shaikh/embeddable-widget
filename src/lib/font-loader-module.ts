@@ -47,11 +47,8 @@ async function registerFontFaces(targetDocument: Document) {
   }
 
   const fontFaceSet = targetDocument.fonts;
-  const loadedFontKeys =
-    registeredFonts.get(targetDocument) ?? new Set<string>();
-  const pendingFonts = FONT_DEFINITIONS.filter(
-    ({ key }) => !loadedFontKeys.has(key),
-  );
+  const loadedFontKeys = registeredFonts.get(targetDocument) ?? new Set<string>();
+  const pendingFonts = FONT_DEFINITIONS.filter(({ key }) => !loadedFontKeys.has(key));
 
   if (pendingFonts.length === 0) {
     return;

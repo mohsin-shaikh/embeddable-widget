@@ -13,13 +13,13 @@ A React-based embeddable widget shipped as a custom element (`<ew-embed-widget>`
 
 ## Tech stack
 
-| Layer        | Choice                          |
-| ------------ | ------------------------------- |
-| UI           | React 19                        |
-| Build        | Vite 7 (library mode)           |
-| Language     | TypeScript                      |
-| Styling      | Tailwind CSS 4                  |
-| Delivery     | ES module (`dist/embed.js`)     |
+| Layer    | Choice                      |
+| -------- | --------------------------- |
+| UI       | React 19                    |
+| Build    | Vite 7 (library mode)       |
+| Language | TypeScript                  |
+| Styling  | Tailwind CSS 4              |
+| Delivery | ES module (`dist/embed.js`) |
 
 ## Getting started
 
@@ -82,10 +82,7 @@ npm run preview
     <title>Host page</title>
   </head>
   <body>
-    <ew-embed-widget
-      heading="Welcome"
-      cta-label="Get Started"
-    ></ew-embed-widget>
+    <ew-embed-widget heading="Welcome" cta-label="Get Started"></ew-embed-widget>
     <script type="module" src="/path/to/embed.js"></script>
     <script type="module">
       const widget = document.querySelector('ew-embed-widget');
@@ -101,18 +98,18 @@ Calling `registerEmbedWidget()` (done automatically by `src/main.tsx`) defines t
 
 ### Host attributes
 
-| Attribute     | Description                          | Default         |
-| ------------- | ------------------------------------ | --------------- |
-| `heading`     | Title text in the widget             | `Embed Widget`  |
-| `cta-label`   | Label for the primary button         | `Get Started`   |
+| Attribute   | Description                  | Default        |
+| ----------- | ---------------------------- | -------------- |
+| `heading`   | Title text in the widget     | `Embed Widget` |
+| `cta-label` | Label for the primary button | `Get Started`  |
 
 ### Host events
 
-| Event       | When                                      | `detail`              |
-| ----------- | ----------------------------------------- | --------------------- |
-| `ew-ready`  | Fonts loaded (or system fallback ready)   | —                     |
-| `ew-error`  | Font registration failed                  | `{ error }`           |
-| `ew-cta`    | Primary button clicked                    | —                     |
+| Event      | When                                    | `detail`    |
+| ---------- | --------------------------------------- | ----------- |
+| `ew-ready` | Fonts loaded (or system fallback ready) | —           |
+| `ew-error` | Font registration failed                | `{ error }` |
+| `ew-cta`   | Primary button clicked                  | —           |
 
 Events bubble and are `composed: true` so they cross the shadow boundary.
 
@@ -134,6 +131,8 @@ embeddable-widget/
 │   └── lib/
 │       └── font-loader-module.ts
 ├── index.html             # Local dev host page
+├── .oxfmtrc.json          # Oxfmt (formatter)
+├── .oxlintrc.json         # Oxlint (linter)
 └── vite.config.ts         # Library build (`formats: ['es']`, fileName `embed`)
 ```
 
@@ -159,12 +158,16 @@ This runs in Vite’s CSS pipeline via `tailwindShadowCssVitePlugin`.
 
 ## Scripts
 
-| Command           | Description                                      |
-| ----------------- | ------------------------------------------------ |
-| `npm run dev`     | Dev server with hot reload                       |
-| `npm run build`   | Typecheck (`tsc -b`) and build the ES library    |
-| `npm test`        | Run Vitest unit tests (PostCSS fixtures, etc.)   |
-| `npm run preview` | Serve the production build locally               |
+| Command             | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| `npm run dev`       | Dev server with hot reload                     |
+| `npm run build`     | Typecheck (`tsc -b`) and build the ES library  |
+| `npm test`          | Run Vitest unit tests (PostCSS fixtures, etc.) |
+| `npm run fmt`       | Format with Oxfmt                              |
+| `npm run fmt:check` | Check formatting (CI)                          |
+| `npm run lint`      | Lint with Oxlint                               |
+| `npm run lint:fix`  | Lint and apply safe Oxlint fixes               |
+| `npm run preview`   | Serve the production build locally             |
 
 ## Customize
 
