@@ -1,12 +1,13 @@
 # Embeddable Widget
 
-A React-based embeddable widget shipped as a custom element (`<embed-widget>`). It mounts inside an open Shadow Root with inlined Tailwind CSS so host-page styles do not leak in, and a single ES module can be dropped onto any site.
+A React-based embeddable widget shipped as a custom element (`<ew-embed-widget>`). It mounts inside an open Shadow Root with inlined Tailwind CSS so host-page styles do not leak in, and a **single ES module** (`dist/embed.js`) can be dropped onto any site.
 
 ## Features
 
-- **Custom element API** — register once, then use `<embed-widget>` anywhere on the page
+- **Custom element API** — register once, then use `<ew-embed-widget>` anywhere on the page
+- **Host attributes & events** — configure copy via attributes; listen for `ew-ready`, `ew-error`, and `ew-cta`
 - **Shadow DOM isolation** — UI and styles live in an open shadow root
-- **Single-file style bundle** — Tailwind is compiled and inlined into the embed script
+- **Single-file bundle** — React, Tailwind CSS, and widget fonts (base64 woff2) ship inside `embed.js`
 - **Shadow-safe Tailwind** — a custom PostCSS transform rewrites `--tw-*` property fallbacks for `:host` and related selectors
 - **Document-level fonts** — Open Sans is registered via the FontFace API on the host document so Shadow DOM consumers can use it reliably
 
@@ -35,7 +36,7 @@ npm install
 
 ### Develop
 
-Starts the Vite dev server with a local host page that already includes `<embed-widget>`:
+Starts the Vite dev server with a local host page that already includes `<ew-embed-widget>`:
 
 ```bash
 npm run dev
@@ -53,8 +54,14 @@ npm run build
 
 Output:
 
-- `dist/embed.js` — ES module entry (registers the custom element)
-- `dist/embed.js.map` — source map
+- `dist/embed.js` — ES module entry (registers the custom element). Expect roughly **~380 KB** raw / **~115 KB** gzip with React + inlined fonts; measure after each UI change.
+- Source maps are **not** emitted for production builds (`mode === 'production'`).
+
+### Test
+
+```bash
+npm test
+```
 
 ### Preview the production build
 
@@ -64,7 +71,7 @@ npm run preview
 
 ## Embed on a host page
 
-1. Host `dist/embed.js` (and any Font/asset URLs that Vite emits with it) on your CDN or static origin.
+1. Host **only** `dist/embed.js` on your CDN or static origin (fonts and CSS are already inlined; no sibling asset files are required).
 2. Load the module and place the custom element:
 
 ```html
@@ -75,21 +82,48 @@ npm run preview
     <title>Host page</title>
   </head>
   <body>
-    <embed-widget></embed-widget>
+    <ew-embed-widget
+      heading="Welcome"
+      cta-label="Get Started"
+    ></ew-embed-widget>
     <script type="module" src="/path/to/embed.js"></script>
+    <script type="module">
+      const widget = document.querySelector('ew-embed-widget');
+      widget?.addEventListener('ew-ready', () => console.log('ready'));
+      widget?.addEventListener('ew-error', (event) => console.error(event.detail));
+      widget?.addEventListener('ew-cta', () => console.log('cta clicked'));
+    </script>
   </body>
 </html>
 ```
 
 Calling `registerEmbedWidget()` (done automatically by `src/main.tsx`) defines the element once per page if it is not already registered.
 
+### Host attributes
+
+| Attribute     | Description                          | Default         |
+| ------------- | ------------------------------------ | --------------- |
+| `heading`     | Title text in the widget             | `Embed Widget`  |
+| `cta-label`   | Label for the primary button         | `Get Started`   |
+
+### Host events
+
+| Event       | When                                      | `detail`              |
+| ----------- | ----------------------------------------- | --------------------- |
+| `ew-ready`  | Fonts loaded (or system fallback ready)   | —                     |
+| `ew-error`  | Font registration failed                  | `{ error }`           |
+| `ew-cta`    | Primary button clicked                    | —                     |
+
+Events bubble and are `composed: true` so they cross the shadow boundary.
+
 ## Project structure
 
 ```text
 embeddable-widget/
-├── assets/fonts/          # Open Sans woff2 files
+├── assets/fonts/          # Open Sans woff2 files (inlined into embed.js at build)
 ├── postcss/
 │   ├── tailwind-shadow-css.module.ts
+│   ├── tailwind-shadow-css.module.test.ts
 │   └── tailwind-shadow-css-vite-plugin.ts
 ├── src/
 │   ├── main.tsx                 # Entry: registers the custom element
@@ -107,7 +141,7 @@ embeddable-widget/
 
 ### Custom element + React
 
-`EmbedWidget` extends `HTMLElement`, attaches an open shadow root, injects the compiled CSS as a `<style>` tag, and mounts React with `createRoot` on that shadow root. On `connectedCallback`, it renders `EmbedWidgetComponent`.
+`EmbedWidget` extends `HTMLElement`, attaches an open shadow root, injects the compiled CSS as a `<style>` tag, creates a dedicated mount `div`, and mounts React with `createRoot` on that node. `connectedCallback` renders the UI; `disconnectedCallback` unmounts the React root to avoid leaks.
 
 ### Tailwind inside Shadow DOM
 
@@ -121,7 +155,7 @@ This runs in Vite’s CSS pipeline via `tailwindShadowCssVitePlugin`.
 
 ### Fonts
 
-`@font-face` inside a shadow tree is fragile across browsers. `ensureFontFaces` loads the bundled woff2 files with `FontFace` and adds them to `document.fonts` so the widget can use `font-sans` (Open Sans) from the shadow tree.
+`@font-face` inside a shadow tree is fragile across browsers. `ensureFontFaces` loads the bundled woff2 files with `FontFace` and adds them to `document.fonts` so the widget can use `font-sans` (Open Sans) from the shadow tree. If loading fails, the UI continues with the system font stack and dispatches `ew-error`.
 
 ## Scripts
 
@@ -129,6 +163,7 @@ This runs in Vite’s CSS pipeline via `tailwindShadowCssVitePlugin`.
 | ----------------- | ------------------------------------------------ |
 | `npm run dev`     | Dev server with hot reload                       |
 | `npm run build`   | Typecheck (`tsc -b`) and build the ES library    |
+| `npm test`        | Run Vitest unit tests (PostCSS fixtures, etc.)   |
 | `npm run preview` | Serve the production build locally               |
 
 ## Customize
