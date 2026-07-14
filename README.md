@@ -139,4 +139,4 @@ This runs in Vite’s CSS pipeline via `tailwindShadowCssVitePlugin`.
 
 ## License
 
-Private project (`"private": true` in `package.json`).
+[MIT](./LICENSE) © 2026 Mohsin Shaikh
