@@ -130,7 +130,7 @@ embeddable-widget/
 │   │   └── embed-component.tsx  # React UI
 │   └── lib/
 │       └── font-loader-module.ts
-├── index.html             # Local dev host page
+├── index.html             # Dev / preview host page (script rewritten to embed.js on build)
 ├── .oxfmtrc.json          # Oxfmt (formatter)
 ├── .oxlintrc.json         # Oxlint (linter)
 └── vite.config.ts         # Library build (`formats: ['es']`, fileName `embed`)

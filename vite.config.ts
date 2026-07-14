@@ -1,37 +1,31 @@
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
-// vite.config.ts
-import { writeFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 import { tailwindShadowCssVitePlugin } from "./postcss/tailwind-shadow-css-vite-plugin";
 
-/** Library builds omit index.html; emit a host page so `vite preview` can load embed.js. */
+/**
+ * Library builds skip the HTML app pipeline. Reuse the root host page and point
+ * its module script at the built embed asset so `vite preview` works.
+ */
 function emitPreviewHostHtml(): Plugin {
   return {
     name: "emit-preview-host-html",
     apply: "build",
-    closeBundle() {
-      const html = `<!doctype html>
-        <html lang="en">
-          <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>Embed Widget Preview</title>
-          </head>
-          <body>
-            <ew-embed-widget
-              heading="Embed Widget"
-              cta-label="Get Started"
-              theme="light"
-            ></ew-embed-widget>
-            <script type="module" src="./embed.js"></script>
-          </body>
-        </html>
-      `;
-      writeFileSync(resolve(__dirname, "dist/index.html"), html);
+    generateBundle() {
+      const html = readFileSync(resolve(__dirname, "index.html"), "utf8").replace(
+        /src="\/src\/main\.tsx"/,
+        'src="./embed.js"',
+      );
+
+      this.emitFile({
+        type: "asset",
+        fileName: "index.html",
+        source: html,
+      });
     },
   };
 }
