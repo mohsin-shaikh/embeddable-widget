@@ -58,7 +58,7 @@ export function EmbedWidgetComponent({
   const statusMessage = fontsFailed
     ? "Custom fonts could not be loaded; using the system font stack."
     : fontsReady
-      ? "Open Sans is loaded at the document level for Shadow DOM usage."
+      ? "Inter is loaded at the document level for Shadow DOM usage."
       : "Loading widget fonts…";
 
   return (
@@ -67,7 +67,7 @@ export function EmbedWidgetComponent({
         <CardTitle>{heading}</CardTitle>
       </CardHeader>
       <CardContent>
-        <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{statusMessage}</p>
       </CardContent>
       <CardFooter>
         <Button onClick={() => onCta?.()}>{ctaLabel}</Button>
