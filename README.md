@@ -85,10 +85,10 @@ npm run preview
     <ew-embed-widget heading="Welcome" cta-label="Get Started"></ew-embed-widget>
     <script type="module" src="/path/to/embed.js"></script>
     <script type="module">
-      const widget = document.querySelector('ew-embed-widget');
-      widget?.addEventListener('ew-ready', () => console.log('ready'));
-      widget?.addEventListener('ew-error', (event) => console.error(event.detail));
-      widget?.addEventListener('ew-cta', () => console.log('cta clicked'));
+      const widget = document.querySelector("ew-embed-widget");
+      widget?.addEventListener("ew-ready", () => console.log("ready"));
+      widget?.addEventListener("ew-error", (event) => console.error(event.detail));
+      widget?.addEventListener("ew-cta", () => console.log("cta clicked"));
     </script>
   </body>
 </html>

@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from "react";
 
-import { ensureFontFaces } from '../lib/font-loader-module';
-import { Button } from './ui/button';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { ensureFontFaces } from "../lib/font-loader-module";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "./ui/card";
 
 export type EmbedWidgetComponentProps = {
   heading?: string;
@@ -13,8 +13,8 @@ export type EmbedWidgetComponentProps = {
 };
 
 export function EmbedWidgetComponent({
-  heading = 'Embed Widget',
-  ctaLabel = 'Get Started',
+  heading = "Embed Widget",
+  ctaLabel = "Get Started",
   onReady,
   onError,
   onCta,
@@ -56,10 +56,10 @@ export function EmbedWidgetComponent({
   }, []);
 
   const statusMessage = fontsFailed
-    ? 'Custom fonts could not be loaded; using the system font stack.'
+    ? "Custom fonts could not be loaded; using the system font stack."
     : fontsReady
-      ? 'Open Sans is loaded at the document level for Shadow DOM usage.'
-      : 'Loading widget fonts…';
+      ? "Open Sans is loaded at the document level for Shadow DOM usage."
+      : "Loading widget fonts…";
 
   return (
     <Card>
@@ -69,13 +69,9 @@ export function EmbedWidgetComponent({
       <CardContent>
         <p className="mt-2 text-sm text-gray-600">{statusMessage}</p>
       </CardContent>
-        <CardFooter>
-          <Button
-            onClick={() => onCta?.()}
-            >
-            {ctaLabel}
-          </Button>
-        </CardFooter>
+      <CardFooter>
+        <Button onClick={() => onCta?.()}>{ctaLabel}</Button>
+      </CardFooter>
     </Card>
   );
 }

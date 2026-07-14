@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it } from "vitest";
 
-import { normalizeTailwindShadowCss } from './tailwind-shadow-css.module';
+import { normalizeTailwindShadowCss } from "./tailwind-shadow-css.module";
 
 const TAILWIND_PROPERTY_FIXTURE = `
 @layer properties {
@@ -35,44 +35,44 @@ const TAILWIND_PROPERTY_FIXTURE = `
 }
 `;
 
-describe('normalizeTailwindShadowCss', () => {
-  it('expands Tailwind fallback selectors with :host and related pseudos', () => {
+describe("normalizeTailwindShadowCss", () => {
+  it("expands Tailwind fallback selectors with :host and related pseudos", () => {
     const result = normalizeTailwindShadowCss(TAILWIND_PROPERTY_FIXTURE);
 
-    expect(result).toContain(':host');
-    expect(result).toContain(':host::before');
-    expect(result).toContain(':host::after');
-    expect(result).toContain('::file-selector-button');
+    expect(result).toContain(":host");
+    expect(result).toContain(":host::before");
+    expect(result).toContain(":host::after");
+    expect(result).toContain("::file-selector-button");
   });
 
-  it('materializes --tw-* fallbacks under @layer properties', () => {
+  it("materializes --tw-* fallbacks under @layer properties", () => {
     const result = normalizeTailwindShadowCss(TAILWIND_PROPERTY_FIXTURE);
 
     expect(result).toMatch(/@layer\s+properties/);
-    expect(result).toContain('--tw-shadow:');
-    expect(result).toContain('--tw-border-style:');
+    expect(result).toContain("--tw-shadow:");
+    expect(result).toContain("--tw-border-style:");
   });
 
-  it('ignores non-Tailwind @property rules that inherit', () => {
+  it("ignores non-Tailwind @property rules that inherit", () => {
     const result = normalizeTailwindShadowCss(TAILWIND_PROPERTY_FIXTURE);
 
     expect(result).not.toMatch(/:host[\s\S]*--unrelated\s*:/);
   });
 
-  it('is idempotent across repeated passes', () => {
+  it("is idempotent across repeated passes", () => {
     const once = normalizeTailwindShadowCss(TAILWIND_PROPERTY_FIXTURE);
     const twice = normalizeTailwindShadowCss(once);
 
     expect(twice).toBe(once);
   });
 
-  it('returns input unchanged when no Tailwind --tw-* defaults exist', () => {
-    const css = '.btn { color: blue; }';
+  it("returns input unchanged when no Tailwind --tw-* defaults exist", () => {
+    const css = ".btn { color: blue; }";
 
     expect(normalizeTailwindShadowCss(css)).toBe(css);
   });
 
-  it('ensures a top-level @layer properties fallback when only @property exists', () => {
+  it("ensures a top-level @layer properties fallback when only @property exists", () => {
     const css = `
 @property --tw-rotate-x {
   syntax: "*";
@@ -84,7 +84,7 @@ describe('normalizeTailwindShadowCss', () => {
     const result = normalizeTailwindShadowCss(css);
 
     expect(result).toMatch(/@layer\s+properties/);
-    expect(result).toContain(':host');
-    expect(result).toContain('--tw-rotate-x: rotateX(0)');
+    expect(result).toContain(":host");
+    expect(result).toContain("--tw-rotate-x: rotateX(0)");
   });
 });

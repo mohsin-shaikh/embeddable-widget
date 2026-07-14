@@ -1,8 +1,8 @@
-import postcss from 'postcss';
+import postcss from "postcss";
 
-const TAILWIND_PROPERTY_NAME_PREFIX = '--tw-';
-const TAILWIND_FALLBACK_SELECTORS = ['*', ':before', ':after'];
-const TAILWIND_OPTIONAL_FALLBACK_SELECTORS = ['::backdrop', '::file-selector-button'];
+const TAILWIND_PROPERTY_NAME_PREFIX = "--tw-";
+const TAILWIND_FALLBACK_SELECTORS = ["*", ":before", ":after"];
+const TAILWIND_OPTIONAL_FALLBACK_SELECTORS = ["::backdrop", "::file-selector-button"];
 
 /**
  * These selectors need explicit defaults inside the shadow tree because they
@@ -10,14 +10,14 @@ const TAILWIND_OPTIONAL_FALLBACK_SELECTORS = ['::backdrop', '::file-selector-but
  * descendant-only matching.
  */
 const SHADOW_FALLBACK_SELECTORS = [
-  ':host',
-  ':host::before',
-  ':host::after',
-  '*',
-  ':before',
-  ':after',
-  '::backdrop',
-  '::file-selector-button',
+  ":host",
+  ":host::before",
+  ":host::after",
+  "*",
+  ":before",
+  ":after",
+  "::backdrop",
+  "::file-selector-button",
 ];
 
 /**
@@ -25,7 +25,7 @@ const SHADOW_FALLBACK_SELECTORS = [
  * defaults even when `@property` registration behavior is not sufficient.
  */
 export function normalizeTailwindShadowCss(css: string) {
-  const root = postcss.parse(css, { from: 'tailwind-shadow.css' });
+  const root = postcss.parse(css, { from: "tailwind-shadow.css" });
   const fallbackDeclarations = collectFallbackDeclarations(root);
 
   if (fallbackDeclarations.size === 0) {
@@ -44,7 +44,7 @@ export function normalizeTailwindShadowCss(css: string) {
  */
 export function tailwindShadowCssPostcssPlugin() {
   return {
-    postcssPlugin: 'tailwind-shadow-css',
+    postcssPlugin: "tailwind-shadow-css",
     Once(root: postcss.Root) {
       const fallbackDeclarations = collectFallbackDeclarations(root);
 
@@ -68,7 +68,7 @@ tailwindShadowCssPostcssPlugin.postcss = true;
 function collectFallbackDeclarations(root: postcss.Root) {
   const fallbackDeclarations = new Map<string, string>();
 
-  root.walkAtRules('property', (atRule) => {
+  root.walkAtRules("property", (atRule) => {
     const propertyName = atRule.params.trim();
 
     if (!propertyName.startsWith(TAILWIND_PROPERTY_NAME_PREFIX)) {
@@ -140,7 +140,7 @@ function ensureShadowFallbackRule(root: postcss.Root, fallbackDeclarations: Map<
     return;
   }
 
-  const fallbackRule = createRule(SHADOW_FALLBACK_SELECTORS.join(','), source);
+  const fallbackRule = createRule(SHADOW_FALLBACK_SELECTORS.join(","), source);
 
   for (const [propertyName, initialValue] of fallbackDeclarations) {
     fallbackRule.append(createDeclaration(propertyName, initialValue, source));
@@ -198,9 +198,9 @@ function selectorsMatch(actualSelectors: string[], expectedSelectors: string[]) 
 
 function isTopLevelPropertiesLayerRule(rule: postcss.Rule) {
   return (
-    rule.parent?.type === 'atrule' &&
-    rule.parent.name === 'layer' &&
-    rule.parent.params.trim() === 'properties'
+    rule.parent?.type === "atrule" &&
+    rule.parent.name === "layer" &&
+    rule.parent.params.trim() === "properties"
   );
 }
 
@@ -223,15 +223,15 @@ function getTailwindPropertyInitialValue(atRule: postcss.AtRule) {
   let initialValue: string | undefined;
 
   for (const node of atRule.nodes ?? []) {
-    if (node.type !== 'decl') {
+    if (node.type !== "decl") {
       continue;
     }
 
-    if (node.prop === 'inherits' && node.value === 'false') {
+    if (node.prop === "inherits" && node.value === "false") {
       inheritsFalse = true;
     }
 
-    if (node.prop === 'initial-value') {
+    if (node.prop === "initial-value") {
       initialValue = node.value;
     }
   }
@@ -248,14 +248,14 @@ function getTailwindPropertyInitialValue(atRule: postcss.AtRule) {
  * properties, not every rule that happens to share the same selector list.
  */
 function isTailwindCustomPropertyDeclaration(node: postcss.ChildNode) {
-  return node.type === 'decl' && node.prop.startsWith(TAILWIND_PROPERTY_NAME_PREFIX);
+  return node.type === "decl" && node.prop.startsWith(TAILWIND_PROPERTY_NAME_PREFIX);
 }
 
 /**
  * Used when merging newly discovered defaults into an existing fallback rule.
  */
 function isMatchingDeclaration(node: postcss.ChildNode, propertyName: string) {
-  return node.type === 'decl' && node.prop === propertyName;
+  return node.type === "decl" && node.prop === propertyName;
 }
 
 /**
@@ -294,7 +294,7 @@ function createRule(selector: string, source: postcss.Source | undefined) {
  * stylesheet so later tooling treats it as part of the same asset.
  */
 function createLayerAtRule(source: postcss.Source | undefined) {
-  const atRule = postcss.atRule({ name: 'layer', params: 'properties' });
+  const atRule = postcss.atRule({ name: "layer", params: "properties" });
 
   atRule.source = source;
 

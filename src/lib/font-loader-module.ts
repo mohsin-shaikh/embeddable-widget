@@ -1,18 +1,18 @@
-import openSansSemiBoldWoff2 from '../../assets/fonts/open-sans-v44-latin-600.woff2';
-import openSansRegularWoff2 from '../../assets/fonts/open-sans-v44-latin-regular.woff2';
+import openSansSemiBoldWoff2 from "../../assets/fonts/open-sans-v44-latin-600.woff2";
+import openSansRegularWoff2 from "../../assets/fonts/open-sans-v44-latin-regular.woff2";
 
 const FONT_DEFINITIONS = [
   {
-    key: 'open-sans-400',
-    family: 'Open Sans',
+    key: "open-sans-400",
+    family: "Open Sans",
     source: openSansRegularWoff2,
-    weight: '400',
+    weight: "400",
   },
   {
-    key: 'open-sans-600',
-    family: 'Open Sans',
+    key: "open-sans-600",
+    family: "Open Sans",
     source: openSansSemiBoldWoff2,
-    weight: '600',
+    weight: "600",
   },
 ] as const;
 
@@ -42,7 +42,7 @@ export function ensureFontFaces(root: Document | ShadowRoot) {
 }
 
 async function registerFontFaces(targetDocument: Document) {
-  if (typeof FontFace === 'undefined' || !('fonts' in targetDocument)) {
+  if (typeof FontFace === "undefined" || !("fonts" in targetDocument)) {
     return;
   }
 
@@ -57,8 +57,8 @@ async function registerFontFaces(targetDocument: Document) {
   const loadedFonts = await Promise.all(
     pendingFonts.map(({ family, key, source, weight }) => {
       const fontFace = new FontFace(family, `url(${source}) format('woff2')`, {
-        display: 'swap',
-        style: 'normal',
+        display: "swap",
+        style: "normal",
         weight,
       });
 
