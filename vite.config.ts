@@ -27,7 +27,8 @@ export default defineConfig(({ mode }) => {
         fileName: 'embed',
         formats: ['es'],
       },
-      sourcemap: true,
+      // Keep maps off the published embed asset; enable locally via --mode development.
+      sourcemap: mode !== 'production',
     },
   };
 });

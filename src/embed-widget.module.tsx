@@ -3,31 +3,102 @@ import { createRoot, type Root } from 'react-dom/client';
 import { EmbedWidgetComponent } from './components/embed-component';
 import styles from './main.css?inline';
 
-export const EMBED_WIDGET_TAG_NAME = 'embed-widget';
+/** Namespaced custom element tag to reduce collision risk on host pages. */
+export const EMBED_WIDGET_TAG_NAME = 'ew-embed-widget';
+
+const OBSERVED_ATTRIBUTES = ['heading', 'cta-label'] as const;
+
+export type EmbedWidgetAttributeName = (typeof OBSERVED_ATTRIBUTES)[number];
 
 /**
  * Web Component that mounts the React widget inside an open Shadow Root with
  * inlined Tailwind styles (single embed.js asset for host pages).
  */
 export class EmbedWidget extends HTMLElement {
-  root: Root;
-  rootContainer: ShadowRoot;
+  static get observedAttributes(): string[] {
+    return [...OBSERVED_ATTRIBUTES];
+  }
+
+  #shadowRoot: ShadowRoot;
+  #mountEl: HTMLDivElement;
+  #root: Root | null = null;
 
   constructor() {
     super();
 
-    this.rootContainer = this.attachShadow({ mode: 'open' });
+    this.#shadowRoot = this.attachShadow({ mode: 'open' });
 
     const style = document.createElement('style');
     style.textContent = styles;
     style.setAttribute('type', 'text/css');
-    this.rootContainer.appendChild(style);
+    this.#shadowRoot.appendChild(style);
 
-    this.root = createRoot(this.rootContainer);
+    this.#mountEl = document.createElement('div');
+    this.#mountEl.setAttribute('data-ew-root', '');
+    this.#shadowRoot.appendChild(this.#mountEl);
   }
 
   connectedCallback() {
-    this.root.render(<EmbedWidgetComponent />);
+    if (!this.#root) {
+      this.#root = createRoot(this.#mountEl);
+    }
+
+    this.#render();
+  }
+
+  disconnectedCallback() {
+    this.#root?.unmount();
+    this.#root = null;
+  }
+
+  attributeChangedCallback(
+    _name: string,
+    oldValue: string | null,
+    newValue: string | null,
+  ) {
+    if (oldValue === newValue || !this.#root) {
+      return;
+    }
+
+    this.#render();
+  }
+
+  #render() {
+    if (!this.#root) {
+      return;
+    }
+
+    this.#root.render(
+      <EmbedWidgetComponent
+        heading={this.getAttribute('heading') ?? undefined}
+        ctaLabel={this.getAttribute('cta-label') ?? undefined}
+        onReady={() => {
+          this.dispatchEvent(
+            new CustomEvent('ew-ready', {
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        }}
+        onError={(error) => {
+          this.dispatchEvent(
+            new CustomEvent('ew-error', {
+              detail: { error },
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        }}
+        onCta={() => {
+          this.dispatchEvent(
+            new CustomEvent('ew-cta', {
+              bubbles: true,
+              composed: true,
+            }),
+          );
+        }}
+      />,
+    );
   }
 }
 
