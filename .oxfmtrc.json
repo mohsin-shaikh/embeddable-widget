@@ -3,6 +3,7 @@
   "singleQuote": false,
   "semi": true,
   "printWidth": 100,
+  "endOfLine": "lf",
   "sortImports": {
     "newlinesBetween": true,
     "internalPattern": ["@/", "~/", "#"],
