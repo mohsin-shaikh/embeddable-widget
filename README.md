@@ -9,7 +9,7 @@ A React-based embeddable widget shipped as a custom element (`<ew-embed-widget>`
 - **Shadow DOM isolation** — UI and styles live in an open shadow root
 - **Single-file bundle** — React, Tailwind CSS, and widget fonts (base64 woff2) ship inside `embed.js`
 - **Shadow-safe Tailwind** — a custom PostCSS transform rewrites `--tw-*` property fallbacks for `:host` and related selectors
-- **Document-level fonts** — Open Sans is registered via the FontFace API on the host document so Shadow DOM consumers can use it reliably
+- **Document-level fonts** — Inter is registered via the FontFace API on the host document so Shadow DOM consumers can use it reliably
 
 ## Tech stack
 
@@ -117,14 +117,14 @@ Events bubble and are `composed: true` so they cross the shadow boundary.
 
 ```text
 embeddable-widget/
-├── assets/fonts/          # Open Sans woff2 files (inlined into embed.js at build)
+├── assets/fonts/          # Inter woff2 files (inlined into embed.js at build)
 ├── postcss/
 │   ├── tailwind-shadow-css.module.ts
 │   ├── tailwind-shadow-css.module.test.ts
 │   └── tailwind-shadow-css-vite-plugin.ts
 ├── src/
 │   ├── main.tsx                 # Entry: registers the custom element
-│   ├── main.css                 # Tailwind + theme (Open Sans)
+│   ├── main.css                 # Tailwind + theme (Inter)
 │   ├── embed-widget.module.tsx  # Web component + Shadow Root mount
 │   ├── components/
 │   │   └── embed-component.tsx  # React UI
@@ -154,7 +154,7 @@ This runs in Vite’s CSS pipeline via `tailwindShadowCssVitePlugin`.
 
 ### Fonts
 
-`@font-face` inside a shadow tree is fragile across browsers. `ensureFontFaces` loads the bundled woff2 files with `FontFace` and adds them to `document.fonts` so the widget can use `font-sans` (Open Sans) from the shadow tree. If loading fails, the UI continues with the system font stack and dispatches `ew-error`.
+`@font-face` inside a shadow tree is fragile across browsers. `ensureFontFaces` loads the bundled woff2 files with `FontFace` and adds them to `document.fonts` so the widget can use `font-sans` (Inter) from the shadow tree. If loading fails, the UI continues with the system font stack and dispatches `ew-error`.
 
 ## Scripts
 
